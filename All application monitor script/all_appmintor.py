@@ -50,7 +50,6 @@ arr_apps_list = ['readarr', 'prowlarr', 'radarr', 'sonarr', 'bazarr', 'lidarr']
 
 """
 Class app_monitor is decalared below with all its functions
-
 """
 
 
@@ -58,7 +57,6 @@ class app_monitor():
 
     """
     SystemD verification and monitor
-
     """
 
     def system_check(self, apps):
@@ -107,6 +105,7 @@ class app_monitor():
 
     def get_docker_apps(self, path):
         docker_app = []
+        special_app = []
         remove_apps = ['backup', 'nginx']
         all_apps = os.listdir(path)
         installed_apps = list(set(all_apps).difference(remove_apps))
@@ -128,7 +127,19 @@ class app_monitor():
                 pass
         if "wireguard" in all_apps:
             docker_app.remove("wireguard")
-        return docker_app
+        if "overseerr" in all_apps:
+            docker_app.remove("overseerr")
+            special_app.append("overseerr")
+        if "jdownloader2" in all_apps:
+            docker_app.remove("jdownloader2")
+            special_app.append("jdownloader2")
+        if "syncthing" in all_apps:
+            docker_app.remove("syncthing")
+            special_app.append("syncthing")
+        if "resilio" in all_apps:
+            docker_app.remove("resilio")
+            special_app.append("resilio")
+        return docker_app,special_app
 
     def sql_based_apps(self, path):
         remove_apps = ['backup', 'nginx']
@@ -196,15 +207,15 @@ class app_monitor():
                         f.write(
                             '{} was down and has been RESTARTED(2nd attempt)'.format(i)+"\n")
                     os.system("clear")
-
-                time.sleep(50)
-                status = os.popen(
-                    "ps aux | grep -i {} | grep -v grep".format(i)).read()
-                count = len(status.splitlines())
-                if count <= 0:
-                    with open(log_file, "a") as f:
-                        f.write(
+                    time.sleep(60)
+                    status = os.popen("ps aux | grep -i {} | grep -v grep".format(i)).read()
+                    count = len(status.splitlines())
+                    if count <= 0:
+                        with open(log_file, "a") as f:
+                            f.write(
                             "\nScript is unable to FIX your {} so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n".format(i))
+                else:
+                    pass            
             else:
                 pass
 
@@ -296,16 +307,16 @@ class app_monitor():
                         f.write("\nTIME: "+current_time+"\n")
                         f.write(
                             '{} was down and has been RESTARTED(2nd attempt)'.format(i)+"\n")
-                os.system("clear")
-
-                time.sleep(50)
-                status = os.popen(
-                    "ps aux | grep -i {} | grep -v grep".format(i)).read()
-                count = len(status.splitlines())
-                if count <= thres:
-                    with open(log_file, "a") as f:
-                        f.write(
+                    os.system("clear")
+                    time.sleep(50)
+                    status = os.popen("ps aux | grep -i {} | grep -v grep".format(i)).read()
+                    count = len(status.splitlines())
+                    if count <= thres:
+                        with open(log_file, "a") as f:
+                            f.write(
                             "\nScript is unable to FIX your {} so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n".format(i))
+                else:
+                    pass
             else:
                 pass
 
@@ -343,16 +354,17 @@ class app_monitor():
                             f.write("\nTIME: "+current_time+"\n")
                             f.write(
                                 'bazarr was down and has been RESTARTED(2nd attempt)'+"\n")
-                    os.system("clear")
-
-                    time.sleep(50)
-                    status = os.popen(
+                            os.system("clear")
+                        time.sleep(50)
+                        status = os.popen(
                         "ps aux | grep -i bazarr | grep -v grep").read()
-                    count = len(status.splitlines())
-                    if count <= thres:
-                        with open(log_file, "a") as f:
-                            f.write(
+                        count = len(status.splitlines())
+                        if count <= thres:
+                            with open(log_file, "a") as f:
+                                f.write(
                                 "\nScript is unable to FIX your bazarr so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                    else:
+                        pass
                 else:
                     pass
         else:
@@ -427,14 +439,16 @@ class app_monitor():
                         f.write(
                             'jdownloader2 was down and has been RESTARTED(2nd attempt)'+"\n")
                     os.system("clear")
-                time.sleep(50)
-                status = os.popen(
-                    "ps aux | grep /usr/bin/openbox | grep -v grep ").read()
-                count = len(status.splitlines())
-                if count <= 0:
-                    with open(log_file, "a") as f:
-                        f.write(
-                            "\nScript is unable to FIX your jdownloader2 so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                    time.sleep(50)
+                    status = os.popen(
+                        "ps aux | grep /usr/bin/openbox | grep -v grep ").read()
+                    count = len(status.splitlines())
+                    if count <= 0:
+                        with open(log_file, "a") as f:
+                            f.write(
+                                "\nScript is unable to FIX your jdownloader2 so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                else:
+                    pass
             else:
                 pass
         else:
@@ -461,14 +475,16 @@ class app_monitor():
                         f.write(
                             'resilio was down and has been RESTARTED(2nd attempt)'+"\n")
                     os.system("clear")
-                time.sleep(50)
-                status = os.popen(
-                    "ps aux | grep 'rslsync --nodaemon --config /config/sync.conf'| grep -v grep ").read()
-                count = len(status.splitlines())
-                if count <= 0:
-                    with open(log_file, "a") as f:
-                        f.write(
-                            "\nScript is unable to FIX your resilio so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                    time.sleep(50)
+                    status = os.popen(
+                        "ps aux | grep 'rslsync --nodaemon --config /config/sync.conf'| grep -v grep ").read()
+                    count = len(status.splitlines())
+                    if count <= 0:
+                        with open(log_file, "a") as f:
+                            f.write(
+                                "\nScript is unable to FIX your resilio so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                else:
+                    pass           
             else:
                 pass
         else:
@@ -501,14 +517,16 @@ class app_monitor():
                         f.write(
                             'overseerr was down and has been RESTARTED(2nd attempt)'+"\n")
                     os.system("clear")
-                time.sleep(50)
-                status = os.popen(
-                    "ps aux | grep '/usr/bin/node dist/index.js'| grep -v grep ").read()
-                count = len(status.splitlines())
-                if count <= 0:
-                    with open(log_file, "a") as f:
-                        f.write(
-                            "\nScript is unable to FIX your overseerr so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                    time.sleep(50)
+                    status = os.popen(
+                        "ps aux | grep '/usr/bin/node dist/index.js'| grep -v grep ").read()
+                    count = len(status.splitlines())
+                    if count <= 0:
+                        with open(log_file, "a") as f:
+                            f.write(
+                                "\nScript is unable to FIX your overseerr so please open a support ticket from here - https://my.ultraseedbox.com/submitticket.php\n")
+                else:
+                    pass
             else:
                 pass
         else:
@@ -523,15 +541,15 @@ if __name__ == '__main__':
     monitor.systemD_verify_list()
     monitor.system_monitor()
     # get all docker apps and insatalled apps on service
-    apps = monitor.get_docker_apps(apps_path)
+    apps ,apps2 = monitor.get_docker_apps(apps_path)
     monitor.get_arr_apps(apps_path)
     monitor.sql_based_apps(apps_path)
     # monitor torrent client
     monitor.dockerized_app(apps)
     monitor.monitor_arr_apps()
     monitor.sql_app_monitor(mysql_apps)
-    monitor.monitor_overserr(apps)
-    monitor.monitor_syncthing(apps)
-    monitor.monitor_jdownloader(apps)
+    monitor.monitor_overserr(apps2)
+    monitor.monitor_syncthing(apps2)
+    monitor.monitor_jdownloader(apps2)
     monitor.bazarr_monitor()
-    monitor.monitor_resilio(apps)
+    monitor.monitor_resilio(apps2)
