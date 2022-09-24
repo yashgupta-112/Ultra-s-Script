@@ -104,7 +104,7 @@ if [ ! -d "$HOME/scripts/app_monitor" ]; then
     if [ "$choice" = "2" ]; then
         docker_installer
     fi
-    if [ "$choice" = "2" ]; then
+    if [ "$choice" = "3" ]; then
         echo "The script is already installed. Do you wish to uninstall it?"
         yes_no
         uninstall
