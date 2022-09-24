@@ -10,14 +10,14 @@ fi
 yes_no() {
     select choice in "Yes" "No"; do
         case ${choice} in
-            Yes)
-                break
+        Yes)
+            break
             ;;
-            No)
-                exit 0
+        No)
+            exit 0
             ;;
-            *)
-                echo "Invalid option $REPLY."
+        *)
+            echo "Invalid option $REPLY."
             ;;
         esac
     done
@@ -30,19 +30,19 @@ installer() {
     if [ ! -d "$HOME/scripts/app_monitor" ]; then
         mkdir -p "$HOME/scripts/app_monitor"
     fi
-    
+
     wget -q -P "${HOME}/scripts/app_monitor/" https://scripts.usbx.me/util/All_app_monitor/all_appmonitor.py
     wget -q -P "${HOME}/scripts/app_monitor/" https://scripts.usbx.me/util/All_app_monitor/all_torrent_client.py
-    
+
     clear
-    
+
     croncmd="/usr/bin/python3 $HOME/scripts/app_monitor/all_appmonitor.py > /dev/null 2>&1"
     cronjob="*/30 * * * * $croncmd"
     (
         crontab -l 2>/dev/null | grep -v -F "$croncmd" || :
         echo "$cronjob"
     ) | crontab -
-    
+
     croncmd1="/usr/bin/python3 $HOME/scripts/app_monitor/all_torrent_client.py > /dev/null 2>&1"
     cronjob="*/5 * * * * $croncmd1"
     (
@@ -59,31 +59,30 @@ uninstall() {
     clear
 }
 
-docker_installer(){
+docker_installer() {
     if [ ! -d "$HOME/scripts/app_monitor" ]; then
         mkdir -p "$HOME/scripts/app_monitor"
     fi
-    
+
     #update python packages
     "$HOME"/scripts/app_monitor/bin/pip3 install --ignore-installed --no-cache-dir pip
     "$HOME"/scripts/app_monitor/bin/pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 "$HOME"/scripts/app_monitor/bin/pip install -U
     "$HOME"/scripts/app_monitor/bin/pip install --no-cache-dir wheel --upgrade
     #install external packages
     "$HOME"/scripts/app_monitor/bin/pip3 --no-cache-dir install discord-webhook
-    
-    
+
     wget -q -P "${HOME}/scripts/app_monitor/" https://scripts.usbx.me/util/All_app_monitor/all_app_discord.py
     wget -q -P "${HOME}/scripts/app_monitor/" https://scripts.usbx.me/util/All_app_monitor/all_torrent_discord.py
-    
+
     clear
-    
+
     croncmd="/usr/bin/python3 $HOME/scripts/app_monitor/all_app_discord.py > /dev/null 2>&1"
     cronjob="*/30 * * * * $croncmd"
     (
         crontab -l 2>/dev/null | grep -v -F "$croncmd" || :
         echo "$cronjob"
     ) | crontab -
-    
+
     croncmd1="/usr/bin/python3 $HOME/scripts/app_monitor/all_torrent_discord.py > /dev/null 2>&1"
     cronjob="*/5 * * * * $croncmd1"
     (
@@ -95,20 +94,21 @@ docker_installer(){
 printf "Please choose option from below if you want notification on discord or info as a log file on your service\n"
 printf "1. Store Applications status on your service at {~/script/app_monitor}\n"
 printf "2. To get application status on your Discord(You need Discord Webhook for it)\n"
+printf "3. To uninstall the script\n"
 read -rp "Please select option 1 or 2: " choice
 if [ ! -d "$HOME/scripts/app_monitor" ]; then
-    if [ "$choice" = "1" ]; then
+  if [ "$choice" = "1" ]; then
         installer
     fi
-    
+
     if [ "$choice" = "2" ]; then
         docker_installer
     fi
-    
-else
-    echo "The script is already installed. Do you wish to uninstall it?"
-    yes_no
-    uninstall
+    if [ "$choice" = "2" ]; then
+        echo "The script is already installed. Do you wish to uninstall it?"
+        yes_no
+        uninstall
+    fi
 fi
 
 exit 0
