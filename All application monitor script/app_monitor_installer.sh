@@ -97,18 +97,17 @@ printf "2. To get application status on your Discord(You need Discord Webhook fo
 printf "3. To uninstall the script\n"
 read -rp "Please select option 1 or 2: " choice
 if [ ! -d "$HOME/scripts/app_monitor" ]; then
-    if [ "$choice" = "1" ]; then
-        installer
-    fi
-
-    if [ "$choice" = "2" ]; then
-        docker_installer
-    fi
-    if [ "$choice" = "3" ]; then
-        echo "The script is already installed. Do you wish to uninstall it?"
-        yes_no
-        uninstall
-    fi
+  if [ "$choice" = "1" ]; then
+    installer
+  fi
+  if [ "$choice" = "2" ]; then
+    docker_installer
+  fi
+  if [ "$choice" = "3" ]; then
+    echo "The script is already installed. Do you wish to uninstall it?"
+    yes_no
+    uninstall
+  fi
 fi
 
 exit 0
