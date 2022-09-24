@@ -95,19 +95,21 @@ printf "Please choose option from below if you want notification on discord or i
 printf "1. Store Applications status on your service at {~/script/app_monitor}\n"
 printf "2. To get application status on your Discord(You need Discord Webhook for it)\n"
 printf "3. To uninstall the script\n"
-read -rp "Please select option 1 or 2: " choice
-if [ ! -d "$HOME/scripts/app_monitor" ]; then
-  if [ "$choice" = "1" ]; then
-    installer
-  fi
-  if [ "$choice" = "2" ]; then
-    docker_installer
-  fi
-  if [ "$choice" = "3" ]; then
-    echo "The script is already installed. Do you wish to uninstall it?"
-    yes_no
-    uninstall
-  fi
+read -rp "Please select option 1 , 2 or 3: " choice
+
+if [ "$choice" = "1" ]; then
+  installer
 fi
+
+if [ "$choice" = "2" ]; then
+  docker_installer
+fi
+
+if [ "$choice" = "3" ]; then
+  echo "The script is already installed. Do you wish to uninstall it?"
+  yes_no
+  uninstall
+fi
+
 
 exit 0
