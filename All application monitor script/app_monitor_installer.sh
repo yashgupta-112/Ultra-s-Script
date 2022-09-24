@@ -97,7 +97,7 @@ printf "2. To get application status on your Discord(You need Discord Webhook fo
 printf "3. To uninstall the script\n"
 read -rp "Please select option 1 or 2: " choice
 if [ ! -d "$HOME/scripts/app_monitor" ]; then
-  if [ "$choice" = "1" ]; then
+    if [ "$choice" = "1" ]; then
         installer
     fi
 
