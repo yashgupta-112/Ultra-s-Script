@@ -95,7 +95,7 @@ docker_installer(){
 printf "Please choose option from below if you want notification on discord or info as a log file on your service\n"
 printf "1. Store Applications status on your service at {~/script/app_monitor}\n"
 printf "2. To get application status on your Discord(You need Discord Webhook for it)\n"
-
+read -rp "Please select option 1 or 2: " choice
 if [ ! -d "$HOME/scripts/app_monitor" ]; then
     if [ "$choice" = "1" ]; then
         installer
